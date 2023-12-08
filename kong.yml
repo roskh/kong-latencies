@@ -15,4 +15,4 @@ plugins:
     config:
       path: "/tmp/logs/file-log.json"
       custom_fields_by_lua: 
-        pre_upstream_latency: "return (ngx.ctx.KONG_PROXY_LATENCY or 0)"
+        latencies.x_pre_upstream: "return (ngx.ctx.KONG_PROXY_LATENCY or 0)"
