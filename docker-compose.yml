@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  kong:
+    image: kong:3.3.1-ubuntu
+    environment:
+      - KONG_PLUGINS=file-log,slowdown
+      - KONG_HEADERS=
+      - KONG_DATABASE=off
+      - KONG_LOG_LEVEL=info
+      - KONG_DECLARATIVE_CONFIG=/etc/kong/kong.yml
+      - KONG_PROXY_LISTEN=0.0.0.0:8000
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      - KONG_REAL_IP_HEADER=X-Forwarded-For
+      - KONG_REAL_IP_RECURSIVE=on
+      - KONG_TRUSTED_IPS=0.0.0.0/0
+    ports:
+      - 8000:8000
+    volumes:
+      - ./kong.yml:/etc/kong/kong.yml:ro
+      - ./logs:/tmp/logs
+      - ./slowdown:/usr/local/share/lua/5.1/kong/plugins/slowdown
+    tmpfs:
+      - /tmp
+
+  echo:
+    build: .
+    ports:
+      - 9090:80
+    environment:
+      - LISTEN_ADDRESS=0.0.0.0:80

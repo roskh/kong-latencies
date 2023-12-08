@@ -1,0 +1,18 @@
+_format_version: "2.1"
+_transform: true
+
+services:
+  - name: echo
+    url: http://echo
+    routes:
+      - name: echo
+        paths:
+          - /echo/
+
+plugins:
+  - name: slowdown
+  - name: file-log
+    config:
+      path: "/tmp/logs/file-log.json"
+      custom_fields_by_lua: 
+        pre_upstream_latency: "return (ngx.ctx.KONG_PROXY_LATENCY or 0)"
